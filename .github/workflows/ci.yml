@@ -1,0 +1,82 @@
+name: CI
+
+on:
+  push:
+    branches: ["main"]
+  pull_request:
+
+jobs:
+  test:
+    name: Install, lint, typecheck, test, audit
+    runs-on: ubuntu-latest
+
+    services:
+      postgres:
+        image: postgres:16-alpine
+        env:
+          POSTGRES_DB: secureauth
+          POSTGRES_USER: secureauth
+          POSTGRES_PASSWORD: secureauth
+        ports:
+          - 5432:5432
+        options: >-
+          --health-cmd "pg_isready -U secureauth -d secureauth"
+          --health-interval 5s
+          --health-timeout 5s
+          --health-retries 10
+      redis:
+        image: redis:7-alpine
+        ports:
+          - 6379:6379
+        options: >-
+          --health-cmd "redis-cli ping"
+          --health-interval 5s
+          --health-timeout 5s
+          --health-retries 10
+
+    env:
+      NODE_ENV: test
+      PORT: 4000
+      WEB_ORIGIN: http://localhost:3000
+      NEXT_PUBLIC_API_URL: http://localhost:4000
+      DATABASE_URL: postgresql://secureauth:secureauth@localhost:5432/secureauth?schema=public
+      REDIS_URL: redis://localhost:6379
+      SESSION_SECRET: ci-session-secret-with-more-than-32-characters
+      PASSWORD_PEPPER: ci-only-pepper
+      SESSION_IDLE_MINUTES: 30
+      SESSION_ABSOLUTE_HOURS: 12
+      LOGIN_RATE_LIMIT_MAX: 8
+      LOGIN_RATE_LIMIT_WINDOW_SECONDS: 900
+      AUTH_RATE_LIMIT_MAX: 10
+      AUTH_RATE_LIMIT_WINDOW_SECONDS: 900
+      LOGIN_THROTTLE_BASE_MS: 0
+      ADMIN_EMAIL: admin@example.com
+      ADMIN_PASSWORD: AdminPassword123
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: npm
+
+      - name: Install
+        run: npm ci
+
+      - name: Generate Prisma client
+        run: npm run prisma:generate
+
+      - name: Lint
+        run: npm run lint
+
+      - name: Typecheck
+        run: npm run typecheck
+
+      - name: Test
+        run: npm test
+
+      - name: Dependency audit
+        run: npm run audit
