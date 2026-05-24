@@ -1,10 +1,62 @@
 # SecureAuth Starter
+
 ![TypeScript](https://img.shields.io/badge/TypeScript-5.x-3178C6?logo=typescript&logoColor=white) ![Node.js](https://img.shields.io/badge/Node.js-20+-339933?logo=node.js&logoColor=white) ![Next.js](https://img.shields.io/badge/Next.js-16-black?logo=next.js&logoColor=white) ![Express](https://img.shields.io/badge/Express.js-API-000000?logo=express&logoColor=white) ![PostgreSQL](https://img.shields.io/badge/PostgreSQL-Database-4169E1?logo=postgresql&logoColor=white) ![Redis](https://img.shields.io/badge/Redis-Sessions%20%26%20Rate%20Limits-DC382D?logo=redis&logoColor=white) ![Prisma](https://img.shields.io/badge/Prisma-ORM-2D3748?logo=prisma&logoColor=white) ![Docker](https://img.shields.io/badge/Docker-Compose-2496ED?logo=docker&logoColor=white) ![Security](https://img.shields.io/badge/Security-OWASP%20Aligned-critical) ![Tests](https://img.shields.io/badge/Tests-13%20Passing-brightgreen) ![License](https://img.shields.io/badge/License-MIT-blue)
-SecureAuth Starter is a security-focused full-stack authentication system built to demonstrate secure software engineering practices in a real working application.
 
-It is not a fake login screen or UI-only portfolio project. The backend owns authentication state, validates requests, hashes passwords with Argon2id, stores sessions and rate-limit counters in Redis, writes security audit events, and protects role-based routes consumed by the Next.js frontend.
+SecureAuth Starter is a security-focused full-stack authentication system built as a portfolio project demonstrating secure software engineering practices. It uses a production-style architecture with a Next.js frontend, Express API, PostgreSQL/Prisma data model, Redis-backed sessions and rate limits, and security-focused automated tests.
 
-The project is designed as a practical portfolio showcase for software engineering, application security, and DevSecOps roles.
+It is intentionally more than a fake login screen or UI-only demo. The backend owns authentication state, hashes passwords with Argon2id, stores opaque session IDs in HTTP-only cookies, enforces CSRF and RBAC controls, and writes audit events for sensitive actions.
+
+This project is designed for software engineering, application security, and DevSecOps portfolio review. It is a local starter/reference implementation, not a fully deployed production identity platform.
+
+---
+
+## Quick Reviewer Path
+
+If you only have five minutes:
+
+1. Read [What This Project Proves](#what-this-project-proves) to understand the engineering signal.
+2. Skim [Architecture](#architecture), [Threat Model](#threat-model), and [OWASP Mapping](#owasp-mapping) for the security model.
+3. Run it locally with the commands in [Running Locally](#running-locally).
+4. Run the automated checks with `npm test`; use `npm run lint`, `npm run typecheck`, and `npm run audit` for the full local verification set.
+5. Review [Project Screenshots](#project-screenshots) for proof of the main flows and verification evidence.
+
+The screenshots show:
+
+- Login and registration UI
+- Protected dashboard after authentication
+- Admin-only user management and RBAC behavior
+- Email verification and password reset flows through the dev mailbox
+- Automated security tests passing
+- Lint/type/audit checks passing
+- Stored password hash prefix proving Argon2id hashing
+
+Security concepts demonstrated:
+
+- Argon2id password hashing
+- HTTP-only cookie sessions
+- Redis-backed sessions and rate limiting
+- CSRF protection for state-changing requests
+- RBAC and admin-only routes
+- Audit logging for sensitive actions
+- PostgreSQL/Prisma data modeling
+- Docker-based local infrastructure
+- Security-focused automated tests
+
+---
+
+## Review Scope / Current Status
+
+SecureAuth Starter is a portfolio and security engineering project. It demonstrates production-style authentication architecture and implementation patterns, but it is not a fully deployed production identity platform.
+
+Production use would require additional operational work, including:
+
+- Real email provider for verification and password reset delivery
+- TLS termination and secure production hosting
+- Monitoring, alerting, and centralized log handling
+- Secret rotation and production secret management
+- Database backups and restore testing
+- CAPTCHA or risk-based controls for public authentication endpoints
+- Operational hardening for infrastructure, deployments, and incident response
 
 ---
 
@@ -24,6 +76,25 @@ The project is designed as a practical portfolio showcase for software engineeri
 - Docker Compose local infrastructure
 - Automated backend and frontend security-focused tests
 - Linting, type checking, and dependency audit verification
+
+---
+
+## What This Project Proves
+
+This repository demonstrates secure software engineering practices around authentication and authorization:
+
+- Secure authentication beyond a fake login screen
+- Argon2id password hashing instead of plaintext or fast hashes
+- HTTP-only cookie sessions with server-side session state
+- Redis-backed sessions and rate limiting
+- CSRF protection on state-changing requests
+- RBAC with `USER` and `ADMIN` roles
+- Admin-only access for user management
+- Audit logging for sensitive authentication and admin actions
+- PostgreSQL/Prisma data modeling for users, tokens, sessions, and audit logs
+- Docker-based local infrastructure for PostgreSQL and Redis
+- Security-focused automated tests for authentication edge cases
+- Honest production-hardening tradeoffs instead of claiming the demo is production-ready
 
 ---
 
